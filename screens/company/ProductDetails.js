@@ -15,16 +15,17 @@ import {
   TextInput,
 } from "react-native-gesture-handler";
 import Icon from "@expo/vector-icons/Entypo";
-import { convertMoney } from "../utils/index";
-import Api from "../services/api";
+import { convertMoney } from "../../utils/index";
+import { PRODUCT } from "../../services/api";
 import { AntDesign } from "@expo/vector-icons";
-import { COLORS, FONTS, SIZES } from "../constants/Theme";
-
+import { COLORS, FONTS, SIZES } from "../../constants/Theme";
+import { HeaderProduct, ListComplements } from "../../components/product";
+import { connect } from "react-redux";
 const win = Dimensions.get("window");
 
-const ratio = win.width / 541; //541 is actual image width
+const ratio = win.width / 541;
 
-export default class Detail extends React.Component {
+class ProductDetails extends React.Component {
   state = {
     quantity: 1,
     complements: [],
@@ -40,9 +41,12 @@ export default class Detail extends React.Component {
       this.setState({ quantity: this.state.quantity - 1 });
     }
   };
-
+  addSale = () => {
+    const product = this.props.route.params.product;
+    this.props.dispatch({ type: "SET_SALE", product });
+  };
   async componentDidMount() {
-    const response = await Api.getComplements(
+    const response = await PRODUCT.getComplements(
       this.props.route.params.product.object_id
     );
     const complements = response.data;
@@ -79,7 +83,6 @@ export default class Detail extends React.Component {
           paddingHorizontal: 15,
         }}
       >
-        {/* Bookmark */}
         <View
           style={{
             flexDirection: "row",
@@ -123,10 +126,8 @@ export default class Detail extends React.Component {
             </Text>
           </TouchableOpacity>
         </View>
-
-        {/* Start Reading */}
-        <TouchableOpacity style={styles.button}>
-          <Text style={{ ...FONTS.h2, color: COLORS.white }}>Adicionar</Text>
+        <TouchableOpacity onPress={this.addSale} style={styles.button}>
+          <Text style={{ ...FONTS.h2, color: COLORS.white }}>Adicionar 1</Text>
         </TouchableOpacity>
       </View>
     );
@@ -140,7 +141,8 @@ export default class Detail extends React.Component {
           </View>
           <FlatList
             data={element.products}
-            renderItem={({ item }) => (
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({ item, index }) => (
               <View
                 style={{
                   flexDirection: "row",
@@ -152,7 +154,6 @@ export default class Detail extends React.Component {
                 <Text style={{ fontSize: 18 }}>{item.name}</Text>
               </View>
             )}
-            keyExtractor={(item, index) => index}
           />
         </View>
       );
@@ -166,54 +167,15 @@ export default class Detail extends React.Component {
       );
     }
     const product = this.props.route.params.product;
-    const categorie = this.props.route.params.categorie;
+
     console.log(this.props.route.params.categorie);
     const complements = this.state.complements.childs;
     return (
       <View style={{ backgroundColor: "#FFF", flex: 1 }}>
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            paddingHorizontal: 20,
-            paddingVertical: 20,
-            marginTop: 20,
-          }}
-        >
-          <View style={{ width: "10%" }}>
-            <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
-              <AntDesign name="leftcircleo" size={24} color="black" />
-            </TouchableOpacity>
-          </View>
-          <View style={{ width: "80%", alignItems: "center" }}>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                alignSelf: "center",
-              }}
-            >
-              <Text
-                style={{
-                  paddingHorizontal: 10,
-                  fontWeight: "bold",
-                  fontSize: 16,
-                }}
-              >
-                {categorie}
-              </Text>
-            </View>
-          </View>
-          <View style={{ width: "10%" }}>
-            <Icon name="heart" color="#f9dd7a" size={30} />
-          </View>
-        </View>
-        <Image
-          style={styles.image}
-          resizeMode={"cover"}
-          source={{
-            uri: "https://server.mixentregas.com.br" + product.img,
-          }}
+        <HeaderProduct
+          product={product}
+          categorie={this.props.route.params.categorie}
+          onPress={() => this.props.navigation.goBack()}
         />
 
         <View
@@ -230,9 +192,9 @@ export default class Detail extends React.Component {
               numberOfLines={3}
               ellipsizeMode="clip"
               style={{
-                fontWeight: "bold",
                 fontSize: 22,
                 width: 250,
+                fontFamily: "MulishRegular",
               }}
             >
               {product.name}
@@ -276,6 +238,13 @@ export default class Detail extends React.Component {
     );
   }
 }
+const mapStateToProps = (state) => {
+  return {
+    categorie: state.categorie,
+    companies: state.companies,
+  };
+};
+export default connect(mapStateToProps)(ProductDetails);
 const styles = StyleSheet.create({
   container: {
     flex: 1,

@@ -31,6 +31,8 @@ export const COLORS = {
   green: "#28a745",
   teal: "#20c997",
   cyan: "#17a2b8",
+  headline: "#3E4462",
+  cardLight: "#FBFAFF",
 };
 export const SIZES = {
   // global sizes
@@ -57,11 +59,13 @@ export const SIZES = {
 };
 
 export const FONTS = {
+  fontTheme: "MulishRegular",
+
   largeTitle: {
     fontSize: SIZES.largeTitle,
     lineHeight: 55,
   },
-  // fontTheme: Monda_400Regular,
+  // fontTheme: MulishRegular_400Regular,
   h1: { fontSize: SIZES.h1, lineHeight: 36 },
   h2: { fontSize: SIZES.h2, lineHeight: 30 },
   h3: { fontSize: SIZES.h3, lineHeight: 22 },
@@ -70,7 +74,6 @@ export const FONTS = {
     fontSize: SIZES.body1,
     lineHeight: 36,
   },
-  fontTheme: "Monda",
   body2: {
     fontSize: SIZES.body2,
     lineHeight: 30,

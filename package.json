@@ -8,24 +8,34 @@
     "eject": "expo eject"
   },
   "dependencies": {
+    "@babel/helper-validator-identifier": "^7.12.11",
     "@expo-google-fonts/inter": "^0.1.0",
     "@expo-google-fonts/monda": "^0.1.0",
     "@react-native-community/blur": "^3.6.0",
     "@react-navigation/bottom-tabs": "^5.11.8",
     "@react-navigation/native": "^5.9.3",
     "@react-navigation/stack": "^5.14.3",
+    "@reduxjs/toolkit": "^1.5.0",
     "axios": "^0.21.1",
+    "babel-plugin-transform-inline-environment-variables": "^0.4.3",
     "expo": "~40.0.0",
     "expo-blur": "~8.2.2",
+    "expo-constants": "~9.3.3",
     "expo-font": "~8.4.0",
     "expo-status-bar": "~1.0.3",
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-40.0.1.tar.gz",
+    "react-native-dotenv": "^2.5.3",
     "react-native-gesture-handler": "~1.8.0",
     "react-native-reanimated": "~1.13.0",
     "react-native-screens": "~2.15.2",
-    "react-native-web": "~0.13.12"
+    "react-native-sticky-parallax-header": "^0.4.0",
+    "react-native-svg": "12.1.0",
+    "react-native-web": "~0.13.12",
+    "react-redux": "^7.2.3",
+    "redux": "^4.0.5",
+    "redux-devtools-extension": "^2.13.9"
   },
   "devDependencies": {
     "@babel/core": "~7.9.0"

@@ -5,8 +5,8 @@ import * as Font from "expo-font";
 export default class LoadingScreen extends Component {
   async ComponentDidMount() {
     await Font.loadAsync({
-      regular: require("../assets/fonts/monda/Monda-Regular.ttf"),
-      bold: require("../assets/fonts/monda/Monda-Bold.ttf"),
+      regular: require("../assets/fonts/MulishRegular/MulishRegular-Regular.ttf"),
+      bold: require("../assets/fonts/MulishRegular/MulishRegular-Bold.ttf"),
     });
   }
   render() {
