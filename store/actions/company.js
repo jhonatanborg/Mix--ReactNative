@@ -1,6 +1,4 @@
-export function addCompany(companies) {
-  return {
-    type: "ADD_COMPANY",
-    text: companies,
-  };
-}
+export const addCompany = (companies) => ({
+  type: "ADD_COMPANIES",
+  payload: companies,
+});
