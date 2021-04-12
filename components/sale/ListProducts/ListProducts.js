@@ -8,43 +8,45 @@ import {
   SectionList,
 } from "react-native";
 import styles from "./ListProducts.style";
+import { AntDesign } from "@expo/vector-icons";
+import { ScrollView } from "react-native-gesture-handler";
 
 const ListProducts = (props) => {
-  const Item = ({ title }) => (
-    <View style={styles.item}>
-      <Text style={styles.title}>{title}</Text>
+  const ItemSeparator = () => {
+    return <View style={styles.itemSeparator} />;
+  };
+  const Item = ({ item }) => (
+    <View style={styles.listItem}>
+      <View style={styles.listItemAvatar}>
+        <Image
+          style={styles.itemAvatar}
+          resizeMode="cover"
+          source={{
+            uri: "https://server.mixentregas.com.br" + item.img,
+          }}
+        ></Image>
+      </View>
+      <View style={styles.contentText}>
+        <Text style={styles.title}>{item.name}</Text>
+        <Text style={styles.subtitle}>R$ {item.sale_value}</Text>
+      </View>
+      <TouchableOpacity
+        onPress={() => {
+          props.onPress(item);
+        }}
+        style={styles.listItemAction}
+      >
+        <AntDesign color="#ff5252" name="closecircleo" size={24} />
+      </TouchableOpacity>
     </View>
   );
 
-  const DATA = [
-    {
-      title: "Main dishes",
-      data: ["Pizza", "Burger", "Risotto"],
-    },
-    {
-      title: "Sides",
-      data: ["French Fries", "Onion Rings", "Fried Shrimps"],
-    },
-    {
-      title: "Drinks",
-      data: ["Water", "Coke", "Beer"],
-    },
-    {
-      title: "Desserts",
-      data: ["Cheese Cake", "Ice Cream"],
-    },
-  ];
   return (
-    <SafeAreaView style={styles.container}>
-      <SectionList
-        sections={DATA}
-        keyExtractor={(item, index) => item + index}
-        renderItem={({ item }) => <Item title={item} />}
-        renderSectionHeader={({ section: { title } }) => (
-          <Text style={styles.header}>{title}</Text>
-        )}
-      />
-    </SafeAreaView>
+    <ScrollView style={styles.container}>
+      {props.sale.map((item, index) => {
+        return <Item key={index} item={item} />;
+      })}
+    </ScrollView>
   );
 };
 

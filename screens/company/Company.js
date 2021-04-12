@@ -23,6 +23,7 @@ const { BASE_URL } = getEnvVars();
 
 class CompanyProfile extends React.Component {
   async componentDidMount() {
+    console.log(this.props);
     const response = await COMPANY.getCompany(this.props.route.params.id);
     const products = response.data.prodCategories[0].products;
     const allprodutc = response.data.prodCategories;

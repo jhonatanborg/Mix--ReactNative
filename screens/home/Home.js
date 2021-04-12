@@ -13,14 +13,17 @@ import { COLORS } from "../../constants";
 import Categorie from "../../components/categorie/Categorie";
 import { CardCompany } from "../../components/company/";
 import { COMPANY } from "../../services/api";
+import * as companyActions from "../../store/actions/company";
+import { bindActionCreators } from "redux";
+
 import { connect } from "react-redux";
 import getEnvVars from "../../environment";
 const { BASE_URL } = getEnvVars();
 class Home extends Component {
   async componentDidMount() {
     const response = await COMPANY.getCompanies();
-    const responsecategories = await COMPANY.getCategories();
-    const categories = responsecategories.data;
+    const responseCategories = await COMPANY.getCategories();
+    const categories = responseCategories.data;
     const companies = response.data.map(function (item) {
       return {
         id: item.id,
@@ -29,14 +32,17 @@ class Home extends Component {
         image: BASE_URL + item.logo,
       };
     });
-    this.props.dispatch({ type: "SET_COMPANIES", companies });
-    this.setState({ companies, categories });
+    this.props.addCompany({ type: "ADD_COMPANIES", companies });
+    const trends = this.props.state.companies.slice(2, 7);
+    this.setState({ categories, trends });
+    console.log(this.state.trends);
   }
   constructor(props) {
     super(props);
     this.state = {
       companies: [],
       categories: [],
+      trends: [],
     };
   }
   filterCategorie = (categorie) => {
@@ -106,9 +112,9 @@ class Home extends Component {
               keyExtractor={(item, index) => index.toString()}
               renderItem={({ item, index, separators }) => (
                 <CardCompany
-                  onPress={(item) =>
+                  onPress={() =>
                     this.props.navigation.navigate("Company", {
-                      object_id: item.object_id,
+                      id: item.id,
                     })
                   }
                   key={index.toString()}
@@ -127,7 +133,7 @@ class Home extends Component {
             <FlatList
               showsHorizontalScrollIndicator={false}
               numColumns={2}
-              data={this.props.companies}
+              data={this.props.state.companies}
               horizontal={false}
               keyExtractor={(item, index) => index.toString()}
               renderItem={({ item, index, separators }) => (
@@ -152,8 +158,9 @@ class Home extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    categorie: state.categorie,
-    companies: state.companies,
+    state: state.company,
   };
 };
-export default connect(mapStateToProps)(Home);
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(companyActions, dispatch);
+export default connect(mapStateToProps, mapDispatchToProps)(Home);

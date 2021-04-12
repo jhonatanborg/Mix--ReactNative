@@ -1,7 +1,7 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 // import AppIntro from "../screens/AppIntro";
-// import Home from "../screens/home/Home";
+import Home from "../screens/home/Home";
 import FilterCompanies from "../screens/filter/FilterCompanies";
 import ProductDetails from "../screens/company/ProductDetails";
 import Company from "../screens/company/Company";

@@ -10,20 +10,26 @@ import {
 } from "react-native";
 import { ListProducts } from "../../components/sale";
 import { connect } from "react-redux";
+import * as saleActions from "../../store/actions/saleActions";
+import { bindActionCreators } from "redux";
+
 class Sale extends Component {
-  async componentDidMount() {
-    console.log(this.props.sale);
-  }
   constructor(props) {
     super(props);
     this.state = {
       sale: [],
     };
   }
+  removeItem = (item) => {
+    this.props.removeItem({ type: "REMOVE_ITEM_SALE", item });
+  };
   render() {
     return (
       <View style={styles.container}>
-        <ListProducts></ListProducts>
+        <ListProducts
+          onPress={(item) => this.removeItem(item)}
+          sale={this.props.sale}
+        ></ListProducts>
       </View>
     );
   }
@@ -34,7 +40,9 @@ const mapStateToProps = (state) => {
     sale: state.sale,
   };
 };
-export default connect(mapStateToProps)(Sale);
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(saleActions, dispatch);
+export default connect(mapStateToProps, mapDispatchToProps)(Sale);
 const styles = StyleSheet.create({
   container: {
     flex: 2,

@@ -20,6 +20,8 @@ import { PRODUCT } from "../../services/api";
 import { AntDesign } from "@expo/vector-icons";
 import { COLORS, FONTS, SIZES } from "../../constants/Theme";
 import { HeaderProduct, ListComplements } from "../../components/product";
+import * as saleActions from "../../store/actions/saleActions";
+import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 const win = Dimensions.get("window");
 
@@ -43,7 +45,7 @@ class ProductDetails extends React.Component {
   };
   addSale = () => {
     const product = this.props.route.params.product;
-    this.props.dispatch({ type: "SET_SALE", product });
+    this.props.addItem({ type: "ADD_ITEM_SALE", product });
   };
   async componentDidMount() {
     const response = await PRODUCT.getComplements(
@@ -168,7 +170,6 @@ class ProductDetails extends React.Component {
     }
     const product = this.props.route.params.product;
 
-    console.log(this.props.route.params.categorie);
     const complements = this.state.complements.childs;
     return (
       <View style={{ backgroundColor: "#FFF", flex: 1 }}>
@@ -240,11 +241,12 @@ class ProductDetails extends React.Component {
 }
 const mapStateToProps = (state) => {
   return {
-    categorie: state.categorie,
-    companies: state.companies,
+    sale: state.sale,
   };
 };
-export default connect(mapStateToProps)(ProductDetails);
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(saleActions, dispatch);
+export default connect(mapStateToProps, mapDispatchToProps)(ProductDetails);
 const styles = StyleSheet.create({
   container: {
     flex: 1,
