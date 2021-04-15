@@ -6,13 +6,15 @@ import { ActivityIndicator } from "react-native";
 import { store, persistor } from "./store/store";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
-import { AsyncStorage } from "react-native";
+// import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const App = () => {
+  // AsyncStorage.clear();
+
   let [customFonts] = useFonts({
-    MulishRegular: require("./assets/fonts/Mulish/static/Mulish-Regular.ttf"),
-    MulishBold: require("./assets/fonts/Mulish/static/Mulish-Bold.ttf"),
-    MulishSemiBold: require("./assets/fonts/Mulish/static/Mulish-SemiBold.ttf"),
+    MontserratRegular: require("./assets/fonts/montserrat/Montserrat-Regular.ttf"),
+    MontserratBold: require("./assets/fonts/montserrat/Montserrat-Bold.ttf"),
+    MontserratSemiBold: require("./assets/fonts/montserrat/Montserrat-SemiBold.ttf"),
   });
 
   if (!customFonts) {
