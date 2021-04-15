@@ -18,6 +18,6 @@ export default StyleSheet.create({
     color: COLORS.black,
     marginTop: 8,
     paddingHorizontal: 15,
-    fontFamily: "MulishSemiBold",
+    fontFamily: "MontserratBold",
   },
 });

@@ -26,13 +26,13 @@ const styles = StyleSheet.create({
     color: COLORS.black,
     marginTop: 10,
     fontSize: 18,
-    fontFamily: "MulishSemiBold",
+    fontFamily: "MontserratBold",
     maxWidth: 150,
   },
   subtitle: {
     color: COLORS.gray1,
     marginTop: 5,
-    fontFamily: "MulishRegular",
+    fontFamily: "MontserratRegular",
   },
 });
 export default styles;

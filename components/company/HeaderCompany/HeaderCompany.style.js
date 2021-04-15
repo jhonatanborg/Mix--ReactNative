@@ -31,23 +31,23 @@ const styles = StyleSheet.create({
   },
   category: {
     paddingHorizontal: 10,
-    fontFamily: "MulishBold",
+    fontFamily: "MontserratBold",
     fontSize: 18,
     color: COLORS.white,
   },
   title: {
     fontSize: 22,
     color: COLORS.black,
-    fontFamily: "MulishBold",
+    fontFamily: "MontserratBold",
     width: "90%",
   },
   subtitle: {
-    fontFamily: "MulishRegular",
+    fontFamily: "MontserratRegular",
     color: COLORS.black,
   },
   status: {
     fontSize: 15,
-    fontFamily: "MulishRegular",
+    fontFamily: "MontserratRegular",
     color: COLORS.black,
   },
   section: {

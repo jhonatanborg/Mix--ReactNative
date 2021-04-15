@@ -10,11 +10,11 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     color: COLORS.lightGray,
-    fontFamily: "MulishRegular",
+    fontFamily: "MontserratRegular",
   },
   details: {
     fontSize: 14,
-    fontFamily: "MulishRegular",
+    fontFamily: "MontserratRegular",
   },
   card: {
     flexDirection: "row",

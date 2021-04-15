@@ -30,17 +30,17 @@ export default StyleSheet.create({
     fontWeight: "600",
     fontSize: 18,
     flex: 10,
-    fontFamily: "MulishRegular",
+    fontFamily: "MontserratRegular",
     color: COLORS.lightGray,
   },
   title: {
     fontSize: 20,
-    fontFamily: "MulishBold",
+    fontFamily: "MontserratBold",
     color: COLORS.indigo,
   },
   subtitle: {
     fontSize: 20,
-    fontFamily: "MulishRegular",
+    fontFamily: "MontserratRegular",
     color: COLORS.indigo,
   },
   logo: {
@@ -51,7 +51,7 @@ export default StyleSheet.create({
   headline: {
     fontSize: 18,
     fontWeight: "600",
-    fontFamily: "MulishBold",
+    fontFamily: "MontserratBold",
     lineHeight: 18,
     color: COLORS.headline,
     marginVertical: 5,

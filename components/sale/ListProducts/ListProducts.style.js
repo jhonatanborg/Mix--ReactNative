@@ -13,7 +13,7 @@ export default StyleSheet.create({
     marginVertical: 15,
     backgroundColor: COLORS.cardLight,
     borderRadius: 8,
-    fontFamily: "MulishRegular",
+    fontFamily: "MontserratRegular",
   },
   listItem: {
     flexDirection: "row",
@@ -25,12 +25,12 @@ export default StyleSheet.create({
   listItemAction: {},
   title: {
     fontSize: 45,
-    fontFamily: "MulishBold",
+    fontFamily: "MontserratBold",
     color: COLORS.gray1,
   },
   subtitle: {
     fontSize: 16,
-    fontFamily: "MulishBold",
+    fontFamily: "MontserratBold",
     color: COLORS.lightGray4,
   },
   itemSeparator: {
