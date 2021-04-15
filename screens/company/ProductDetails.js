@@ -1,240 +1,222 @@
 import React from "react";
 import {
   View,
-  Text,
-  Image,
-  FlatList,
-  StyleSheet,
   ActivityIndicator,
   Dimensions,
-  Button,
-} from "react-native";
-import {
   TouchableOpacity,
+  Text,
   ScrollView,
-  TextInput,
-} from "react-native-gesture-handler";
-import Icon from "@expo/vector-icons/Entypo";
-import { convertMoney } from "../../utils/index";
+} from "react-native";
 import { PRODUCT } from "../../services/api";
-import { AntDesign } from "@expo/vector-icons";
-import { COLORS, FONTS, SIZES } from "../../constants/Theme";
-import { HeaderProduct, ListComplements } from "../../components/product";
+import {
+  HeaderProduct,
+  ListComplements,
+  BottomBarSection,
+} from "../../components/product";
 import * as saleActions from "../../store/actions/saleActions";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-const win = Dimensions.get("window");
-
-const ratio = win.width / 541;
 
 class ProductDetails extends React.Component {
-  state = {
-    quantity: 1,
-    complements: [],
-    loading: true,
-    fontsLoaded: false,
-  };
-  addQuantity = (quantity) => {
-    this.setState({ quantity: this.state.quantity + 1 });
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      quantity: 1,
+      complements: [],
+      loading: true,
+      listanova: [],
+      total: 0,
+      totalComplements: 0,
+    };
+  }
 
-  subtractQuantity = (quantity) => {
-    if (this.state.quantity > 0) {
-      this.setState({ quantity: this.state.quantity - 1 });
-    }
-  };
-  addSale = () => {
-    const product = this.props.route.params.product;
-    this.props.addItem({ type: "ADD_ITEM_SALE", product });
-  };
+  componentWillUnmount() {
+    this.setState({ total: this.props.route.params.product.sale_value });
+  }
   async componentDidMount() {
     const response = await PRODUCT.getComplements(
       this.props.route.params.product.object_id
     );
-    const complements = response.data;
-    this.setState({ complements });
+    this.setState({
+      total: parseFloat(this.props.route.params.product.sale_value),
+    });
+    if (response.data.childs && response.data.childs.length > 0) {
+      const complements = response.data.childs;
+      complements.map((child) =>
+        child.products.map((product) => {
+          product.qtd = 0;
+        })
+      );
+      this.setState({ complements });
+    }
     this.setState({ loading: false });
   }
-  renderDescription = (product) => {
-    if (product.description) {
-      return (
-        <View style={{ marginVertical: 10 }}>
-          <Text
-            style={{
-              color: "#a4a4a9",
-              fontWeight: "bold",
-              fontSize: 16,
-              marginHorizontal: 20,
-              textAlign: "justify",
-              fontFamily: FONTS.fontTheme,
-            }}
-          >
-            {product.description}
-          </Text>
-        </View>
-      );
-    }
+  AddQuantityItem = () => {
+    const quantity = this.state.quantity + 1;
+    this.setState({ quantity });
+    const total = parseFloat(this.state.total) * quantity;
+    this.setState({ total });
+    console.log("total no estado", this.state.total);
+    console.log("variavel funcao", total);
+    console.log("quantidade", quantity);
+    console.log("total de complementos somados", this.state.totalComplements);
   };
-  renderBottomButton = () => {
-    return (
-      <View
-        style={{
-          flex: 1,
-          flexDirection: "row",
-          justifyContent: "space-between",
-          paddingHorizontal: 15,
-        }}
-      >
-        <View
-          style={{
-            flexDirection: "row",
-            alignSelf: "center",
-            alignItems: "center",
-            paddingHorizontal: 30,
-            paddingVertical: 20,
-            borderRadius: 20,
-            backgroundColor: COLORS.lightGray2,
-          }}
-        >
-          <TouchableOpacity onPress={this.addQuantity}>
-            <Text
-              style={{
-                fontWeight: "bold",
-                fontSize: 12,
-              }}
-            >
-              +
-            </Text>
-          </TouchableOpacity>
-
-          <Text
-            style={{
-              fontSize: 18,
-              fontWeight: "bold",
-              paddingHorizontal: 18,
-            }}
-          >
-            {this.state.quantity}
-          </Text>
-
-          <TouchableOpacity onPress={this.subtractQuantity}>
-            <Text
-              style={{
-                fontWeight: "bold",
-                fontSize: 18,
-              }}
-            >
-              -
-            </Text>
-          </TouchableOpacity>
-        </View>
-        <TouchableOpacity onPress={this.addSale} style={styles.button}>
-          <Text style={{ ...FONTS.h2, color: COLORS.white }}>Adicionar 1</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  };
-  renderItem = (complements) =>
-    complements.map((element) => {
-      return (
-        <View>
-          <View style={styles.list}>
-            <Text style={styles.listTitle}>{element.name}</Text>
-          </View>
-          <FlatList
-            data={element.products}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={({ item, index }) => (
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  paddingHorizontal: 15,
-                  paddingVertical: 20,
-                }}
-              >
-                <Text style={{ fontSize: 18 }}>{item.name}</Text>
-              </View>
-            )}
-          />
-        </View>
-      );
+  DecraseQuantityItem = () => {
+    const quantity = this.state.quantity > 1 ? this.state.quantity - 1 : 1;
+    this.setState({
+      quantity,
     });
+    const total = quantity * parseFloat(this.state.total);
+    this.setState({ total });
+    console.log("QUANTIDADE:", quantity);
+    console.log("TOTAL:", total);
+  };
+  AddMountComplements = (complement, category, limit) => {
+    let listanova = this.state.listanova;
+    let findedCategory = this.state.listanova[category];
+    if (findedCategory) {
+      const findexIndex = findedCategory.findIndex(
+        (item) => item && item.id === complement.id
+      );
+      if (
+        findexIndex >= 0 &&
+        findedCategory.limite > 0 &&
+        findedCategory.allQtd < findedCategory.limite
+      ) {
+        findedCategory[findexIndex].qtd++;
+        findedCategory.allQtd++;
+        const totalComplements = (this.state.totalComplements += Number(
+          complement.sale_value
+        ));
+        this.setState({ totalComplements });
+        this.setState({
+          total:
+            parseFloat(this.state.total) +
+            parseFloat(complement.sale_value) * this.state.quantity,
+        });
+        console.log("SEGUNDO ADD");
+
+        console.log("VALOR TOTAL DE COMPLEMENTO 2º ADD", totalComplements);
+      } else if (findedCategory.allQtd < findedCategory.limite) {
+        complement.qtd = 1;
+        findedCategory.push(complement);
+        findedCategory.allQtd++;
+        const totalComplements =
+          this.state.totalComplements + Number(complement.sale_value);
+        console.log("TERCEIRO ADD");
+
+        console.log("VALOR TOTAL DE COMPLEMENTO 3º ADD", totalComplements);
+        this.setState({ totalComplements });
+        this.setState({
+          total:
+            parseFloat(this.state.total) +
+            Number(complement.sale_value) * this.state.quantity,
+        });
+        console.log("total:", this.state.total);
+        console.log("total complementos:", totalComplements);
+      }
+    } else {
+      complement.qtd = 1;
+      findedCategory = [complement];
+      findedCategory.limite = limit === 0 ? 9999 : limit;
+      findedCategory.allQtd = 1;
+      const totalComplements =
+        this.state.totalComplements + Number(complement.sale_value);
+      this.setState({ totalComplements });
+      this.setState({
+        total:
+          parseFloat(this.state.total) +
+          parseFloat(totalComplements) * this.state.quantity,
+      });
+      console.log("PRIMEIRO ADD");
+
+      console.log("VALOR TOTAL DE COMPLEMENTO 1º ADD", totalComplements);
+    }
+    listanova[category] = findedCategory;
+    this.setState({ listanova });
+    const newListaNova = [];
+    Object.keys(this.state.listanova).forEach((key) => {
+      if (this.state.listanova[key].allQtd > 0) {
+        newListaNova[key] = this.state.listanova[key];
+      }
+    });
+    this.setState({ listanova: newListaNova });
+  };
+  addSale = () => {
+    let objectChilds = [];
+    if (this.state.complements.length > 0) {
+      this.state.complements.forEach((category) => {
+        console.log(category);
+        if (this.state.listanova[category.name]) {
+          this.state.listanova[category.name].forEach((complement) => {
+            console.log("bem aqui");
+            objectChilds.push({
+              product_id: complement.id,
+              product_qtd: complement.qtd,
+              cashback_return: complement.cashback_return,
+              product_name: complement.name,
+              total: complement.sale_value,
+              sale_type_id: 1,
+              company_id: 1,
+            });
+          });
+        }
+      });
+    }
+    let sale = {
+      product_id: this.props.route.params.product.id,
+      product_qtd: this.state.quantity,
+      product_name: this.props.route.params.product.name,
+      img: this.props.route.params.product.img,
+      total: this.state.total,
+      cashback_return: this.props.route.params.product.cashback_return,
+      sale_type_id: 1,
+      company_id: 1,
+      childs: objectChilds,
+      comment: "oba",
+    };
+    console.log("produto pronto", sale);
+    this.props.addItem({ type: "ADD_ITEM_SALE", sale });
+  };
+
   render() {
     if (this.state.loading) {
       return (
-        <View style={styles.container}>
+        <View>
           <ActivityIndicator size="large" color="#000" />
         </View>
       );
     }
     const product = this.props.route.params.product;
 
-    const complements = this.state.complements.childs;
+    const complements = this.state.complements;
     return (
-      <View style={{ backgroundColor: "#FFF", flex: 1 }}>
+      <View style={{ backgroundColor: "#F4F5F7", flex: 1 }}>
         <HeaderProduct
           product={product}
           categorie={this.props.route.params.categorie}
           onPress={() => this.props.navigation.goBack()}
         />
-
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-            marginHorizontal: 20,
-            paddingVertical: product.description ? 20 : 20,
+        <ScrollView
+          ref={(ref) => {
+            this.setState({ ref });
           }}
         >
-          <View>
-            <Text
-              numberOfLines={3}
-              ellipsizeMode="clip"
-              style={{
-                fontSize: 22,
-                width: 250,
-                fontFamily: "MulishRegular",
-              }}
-            >
-              {product.name}
-            </Text>
-          </View>
-          <Text
-            style={{
-              fontWeight: "bold",
-              fontSize: 25,
-            }}
-          >
-            {convertMoney(product.sale_value)}
-          </Text>
-        </View>
-        {this.renderDescription(product)}
-
-        <View
-          horizontal={false}
-          style={{
-            backgroundColor: "#FFF",
-            paddingVertical: 10,
-            flex: 1,
-          }}
-        >
-          {this.renderItem(complements)}
-        </View>
-        <View
-          style={{
-            height: 80,
-            marginBottom: 0,
-            elevation: 5,
-            shadowColor: "#000",
-            shadowOffset: { width: 0, height: 5 },
-            shadowOpacity: 2,
-            shadowRadius: 2,
-          }}
-        >
-          {this.renderBottomButton()}
-        </View>
+          <ListComplements
+            onPress={(item, category, limit) =>
+              this.AddMountComplements(item, category, limit)
+            }
+            complements={complements}
+          />
+        </ScrollView>
+        <BottomBarSection
+          total={this.state.total}
+          quantity={this.state.quantity}
+          AddQuantity={this.AddQuantityItem}
+          DecraseQuantity={this.DecraseQuantityItem}
+          onPress={this.addSale}
+        />
+        <View style={{ paddingBottom: 100 }}></View>
       </View>
     );
   }
@@ -247,50 +229,3 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) =>
   bindActionCreators(saleActions, dispatch);
 export default connect(mapStateToProps, mapDispatchToProps)(ProductDetails);
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "stretch",
-    justifyContent: "center",
-    paddingHorizontal: 10,
-    backgroundColor: "#f5f5fa",
-  },
-  image: {
-    width: win.width,
-    height: 302 * ratio,
-  },
-  productsList: {
-    flexDirection: "row",
-    marginHorizontal: 15,
-  },
-  primaryText: {
-    fontSize: 18,
-    fontWeight: "bold",
-    paddingHorizontal: 10,
-    paddingVertical: 20,
-  },
-  listTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-
-    color: "#424242",
-  },
-  list: {
-    backgroundColor: "#f5f5f5",
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-  },
-  listComplements: {
-    paddingHorizontal: 10,
-  },
-  button: {
-    flex: 1,
-    backgroundColor: COLORS.primary,
-    marginHorizontal: SIZES.base,
-    marginVertical: SIZES.base,
-    borderRadius: SIZES.radius,
-    paddingHorizontal: 80,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});

@@ -15,28 +15,27 @@ import Icon from "@expo/vector-icons/Entypo";
 import CardCompany from "../../components/company/CardCompany/CardCompany";
 import { connect } from "react-redux";
 class Home extends Component {
-  async componentDidMount() {
-    const companiesFilter = this.props.companies.filter(
-      (company) => company.categorie === this.props.categorieActive.name
-    );
-    console.log(this.props.categorieActive);
-    this.setState({ companiesFilter });
-  }
   constructor(props) {
     super(props);
     this.state = {
       companiesFilter: [],
+      categorie: {},
     };
   }
-  filterCategorie = (categorie) => {
-    return {
-      type: "SET_CATEGORIE_FILTER",
-      categorie,
-    };
-  };
+  async componentDidMount() {
+    console.log(this.props);
+    const companiesFilter = this.props.companies.filter(
+      (company) => company.categorie === this.props.route.params.categorie.name
+    );
+    const categorie = this.props.route.params.categorie;
+    console.log(categorie);
+
+    this.setState({ companiesFilter, categorie });
+  }
+
   render() {
     return (
-      <ScrollView style={styles.container}>
+      <ScrollView horizontal={false} style={styles.container}>
         <View style={styles.contain}>
           <View
             style={{
@@ -63,7 +62,7 @@ class Home extends Component {
                 <Image
                   style={{ width: 30, height: 30, alignSelf: "center" }}
                   resizeMode="contain"
-                  source={this.props.categorieActive.img}
+                  source={this.state.categorie.img}
                 ></Image>
                 <Text
                   style={{
@@ -72,7 +71,7 @@ class Home extends Component {
                     fontSize: 16,
                   }}
                 >
-                  {this.props.categorieActive.name}
+                  {this.state.categorie.name}
                 </Text>
               </View>
             </View>
@@ -106,6 +105,6 @@ class Home extends Component {
   }
 }
 const mapStateToProps = (state) => {
-  return { companies: state.companies, categorieActive: state.categorieActive };
+  return { companies: state.company.companies };
 };
 export default connect(mapStateToProps)(Home);

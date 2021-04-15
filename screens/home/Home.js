@@ -21,21 +21,24 @@ import getEnvVars from "../../environment";
 const { BASE_URL } = getEnvVars();
 class Home extends Component {
   async componentDidMount() {
-    const response = await COMPANY.getCompanies();
-    const responseCategories = await COMPANY.getCategories();
-    const categories = responseCategories.data;
-    const companies = response.data.map(function (item) {
-      return {
-        id: item.id,
-        title: item.name,
-        categorie: item.primaryCategory.name,
-        image: BASE_URL + item.logo,
-      };
-    });
-    this.props.addCompany({ type: "ADD_COMPANIES", companies });
-    const trends = this.props.state.companies.slice(2, 7);
-    this.setState({ categories, trends });
-    console.log(this.state.trends);
+    try {
+      const response = await COMPANY.getCompanies();
+      const responseCategories = await COMPANY.getCategories();
+      const categories = responseCategories.data;
+      const companies = response.data.map(function (item) {
+        return {
+          id: item.id,
+          title: item.name,
+          categorie: item.primaryCategory.name,
+          image: BASE_URL + item.logo,
+        };
+      });
+      this.props.addCompany({ companies });
+      const trends = this.props.companies.slice(2, 7);
+      this.setState({ categories, trends });
+    } catch (error) {
+      console.log("aqui", error.message);
+    }
   }
   constructor(props) {
     super(props);
@@ -46,11 +49,9 @@ class Home extends Component {
     };
   }
   filterCategorie = (categorie) => {
-    this.props.navigation.navigate("FilterCompanies");
-    return {
-      type: "SET_CATEGORIE_FILTER",
-      categorie,
-    };
+    this.props.navigation.navigate("FilterCompanies", {
+      categorie: categorie,
+    });
   };
   render() {
     return (
@@ -91,9 +92,7 @@ class Home extends Component {
               renderItem={({ item, index, separators }) => (
                 <Categorie
                   key={index.toString()}
-                  onPress={() =>
-                    this.props.dispatch(this.filterCategorie(item))
-                  }
+                  onPress={() => this.filterCategorie(item)}
                   categorie={item}
                 ></Categorie>
               )}
@@ -133,7 +132,7 @@ class Home extends Component {
             <FlatList
               showsHorizontalScrollIndicator={false}
               numColumns={2}
-              data={this.props.state.companies}
+              data={this.props.companies}
               horizontal={false}
               keyExtractor={(item, index) => index.toString()}
               renderItem={({ item, index, separators }) => (
@@ -156,11 +155,9 @@ class Home extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    state: state.company,
-  };
-};
+const mapStateToProps = (state) => ({
+  companies: state.company.companies,
+});
 const mapDispatchToProps = (dispatch) =>
   bindActionCreators(companyActions, dispatch);
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

@@ -97,7 +97,7 @@ class CompanyProfile extends React.Component {
           >
             <Text
               style={{
-                fontFamily: "MulishRegular",
+                fontFamily: "MontserratRegular",
                 fontSize: 16,
                 color: item.selected ? COLORS.lightGray2 : COLORS.lightGray1,
               }}
@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
   },
   primaryText: {
     fontSize: 20,
-    fontFamily: "MulishBold",
+    fontFamily: "MontserratBold",
     paddingHorizontal: 15,
     paddingVertical: 20,
     color: COLORS.black,

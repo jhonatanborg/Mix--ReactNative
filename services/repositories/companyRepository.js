@@ -4,7 +4,7 @@ export default {
     instance({
       method: "GET",
       url: "/company",
-    }),
+    }).catch((error) => console.log(error)),
   getCompany: (id) =>
     instance({
       method: "GET",

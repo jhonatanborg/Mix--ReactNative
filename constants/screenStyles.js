@@ -22,7 +22,7 @@ const screenStyles = StyleSheet.create({
     letterSpacing: -0.2,
     paddingTop: 40,
     paddingBottom: 20,
-    fontFamily: "MulishRegular",
+    fontFamily: "MontserratRegular",
   },
   foreground: {
     flex: 1,
