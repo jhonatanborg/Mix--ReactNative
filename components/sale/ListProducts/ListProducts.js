@@ -15,6 +15,7 @@ const ListProducts = (props) => {
   const ItemSeparator = () => {
     return <View style={styles.itemSeparator} />;
   };
+
   const Item = ({ item }) => (
     <View style={styles.listItem}>
       <View style={styles.listItemAvatar}>
@@ -27,8 +28,8 @@ const ListProducts = (props) => {
         ></Image>
       </View>
       <View style={styles.contentText}>
-        <Text style={styles.title}>{item.name}</Text>
-        <Text style={styles.subtitle}>R$ {item.sale_value}</Text>
+        <Text style={styles.title}>{item.product_name}</Text>
+        <Text style={styles.subtitle}>R$ {item.total}</Text>
       </View>
       <TouchableOpacity
         onPress={() => {
@@ -44,6 +45,8 @@ const ListProducts = (props) => {
   return (
     <ScrollView style={styles.container}>
       {props.sale.map((item, index) => {
+        console.log(item);
+
         return <Item key={index} item={item} />;
       })}
     </ScrollView>
