@@ -16,7 +16,7 @@ const ListProducts = (props) => {
     return <View style={styles.itemSeparator} />;
   };
 
-  const Item = ({ item }) => (
+  const Item = ({ item, index }) => (
     <View style={styles.listItem}>
       <View style={styles.listItemAvatar}>
         <Image
@@ -33,7 +33,7 @@ const ListProducts = (props) => {
       </View>
       <TouchableOpacity
         onPress={() => {
-          props.onPress(item);
+          props.onPress(index);
         }}
         style={styles.listItemAction}
       >
@@ -45,9 +45,9 @@ const ListProducts = (props) => {
   return (
     <ScrollView style={styles.container}>
       {props.sale.map((item, index) => {
-        console.log(item);
+        console.log(item, index);
 
-        return <Item key={index} item={item} />;
+        return <Item key={index} item={item} index={index} />;
       })}
     </ScrollView>
   );

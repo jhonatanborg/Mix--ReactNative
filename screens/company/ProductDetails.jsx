@@ -1,12 +1,5 @@
 import React from "react";
-import {
-  View,
-  ActivityIndicator,
-  Dimensions,
-  TouchableOpacity,
-  Text,
-  ScrollView,
-} from "react-native";
+import { View, ActivityIndicator, ScrollView } from "react-native";
 import { PRODUCT } from "../../services/api";
 import {
   HeaderProduct,
@@ -33,6 +26,7 @@ class ProductDetails extends React.Component {
   componentWillUnmount() {
     this.setState({ total: this.props.route.params.product.sale_value });
   }
+
   async componentDidMount() {
     const response = await PRODUCT.getComplements(
       this.props.route.params.product.object_id
@@ -56,10 +50,6 @@ class ProductDetails extends React.Component {
     this.setState({ quantity });
     const total = parseFloat(this.state.total) * quantity;
     this.setState({ total });
-    console.log("total no estado", this.state.total);
-    console.log("variavel funcao", total);
-    console.log("quantidade", quantity);
-    console.log("total de complementos somados", this.state.totalComplements);
   };
   DecraseQuantityItem = () => {
     const quantity = this.state.quantity > 1 ? this.state.quantity - 1 : 1;
@@ -68,8 +58,6 @@ class ProductDetails extends React.Component {
     });
     const total = quantity * parseFloat(this.state.total);
     this.setState({ total });
-    console.log("QUANTIDADE:", quantity);
-    console.log("TOTAL:", total);
   };
   AddMountComplements = (complement, category, limit) => {
     let listanova = this.state.listanova;
@@ -89,48 +77,47 @@ class ProductDetails extends React.Component {
           complement.sale_value
         ));
         this.setState({ totalComplements });
-        this.setState({
-          total:
-            parseFloat(this.state.total) +
-            parseFloat(complement.sale_value) * this.state.quantity,
+        this.setState((prevState) => {
+          return {
+            total:
+              parseFloat(prevState.total) +
+              parseFloat(complement.sale_value) * prevState.quantity,
+          };
         });
-        console.log("SEGUNDO ADD");
-
-        console.log("VALOR TOTAL DE COMPLEMENTO 2º ADD", totalComplements);
       } else if (findedCategory.allQtd < findedCategory.limite) {
         complement.qtd = 1;
         findedCategory.push(complement);
         findedCategory.allQtd++;
         const totalComplements =
           this.state.totalComplements + Number(complement.sale_value);
-        console.log("TERCEIRO ADD");
 
-        console.log("VALOR TOTAL DE COMPLEMENTO 3º ADD", totalComplements);
         this.setState({ totalComplements });
-        this.setState({
-          total:
-            parseFloat(this.state.total) +
-            Number(complement.sale_value) * this.state.quantity,
+
+        this.setState((prevState) => {
+          return {
+            total:
+              parseFloat(prevState.total) +
+              Number(complement.sale_value) * prevState.quantity,
+          };
         });
-        console.log("total:", this.state.total);
-        console.log("total complementos:", totalComplements);
       }
     } else {
       complement.qtd = 1;
       findedCategory = [complement];
       findedCategory.limite = limit === 0 ? 9999 : limit;
       findedCategory.allQtd = 1;
-      const totalComplements =
-        this.state.totalComplements + Number(complement.sale_value);
-      this.setState({ totalComplements });
-      this.setState({
-        total:
-          parseFloat(this.state.total) +
-          parseFloat(totalComplements) * this.state.quantity,
-      });
-      console.log("PRIMEIRO ADD");
 
-      console.log("VALOR TOTAL DE COMPLEMENTO 1º ADD", totalComplements);
+      this.setState({
+        totalComplements:
+          this.state.totalComplements + Number(complement.sale_value),
+      });
+      this.setState((prevState) => {
+        return {
+          total:
+            parseFloat(this.state.total) +
+            parseFloat(prevState.totalComplements) * this.state.quantity,
+        };
+      });
     }
     listanova[category] = findedCategory;
     this.setState({ listanova });
@@ -142,6 +129,47 @@ class ProductDetails extends React.Component {
     });
     this.setState({ listanova: newListaNova });
   };
+  RemoveMountComplements = (complement, category) => {
+    let listanova = this.state.listanova;
+    if (listanova[category]) {
+      const findexIndex = listanova[category].findIndex(
+        (item) => item && item.id === complement.id
+      );
+
+      if (findexIndex >= 0) {
+        listanova[category][findexIndex].qtd--;
+        listanova[category].allQtd--;
+        const sale_value = Number(listanova[category][findexIndex].sale_value);
+        this.setState((prevState) => {
+          return {
+            total: parseFloat(prevState.total) - sale_value,
+          };
+        });
+        this.setState((prevState) => {
+          return {
+            totalComplements:
+              parseFloat(prevState.totalComplements) - sale_value,
+          };
+        });
+        if (listanova[category][findexIndex].qtd <= 0) {
+          listanova[category].splice(findexIndex, 1);
+        }
+        const newListaNova = [];
+        if (listanova[category].allQtd <= 0) {
+          Object.keys(listanova).forEach((key) => {
+            if (listanova[key].allQtd > 0) {
+              newListaNova[key] = listanova[key];
+            }
+          });
+          this.setState({ listanova: newListaNova });
+        }
+      }
+    }
+    console.log("ultimo", this.state.total);
+    this.setState((prevState) => {
+      console.log("novo", prevState);
+    });
+  };
   addSale = () => {
     let objectChilds = [];
     if (this.state.complements.length > 0) {
@@ -149,7 +177,6 @@ class ProductDetails extends React.Component {
         console.log(category);
         if (this.state.listanova[category.name]) {
           this.state.listanova[category.name].forEach((complement) => {
-            console.log("bem aqui");
             objectChilds.push({
               product_id: complement.id,
               product_qtd: complement.qtd,
@@ -175,7 +202,6 @@ class ProductDetails extends React.Component {
       childs: objectChilds,
       comment: "oba",
     };
-    console.log("produto pronto", sale);
     this.props.addItem({ type: "ADD_ITEM_SALE", sale });
   };
 
@@ -188,7 +214,6 @@ class ProductDetails extends React.Component {
       );
     }
     const product = this.props.route.params.product;
-
     const complements = this.state.complements;
     return (
       <View style={{ backgroundColor: "#F4F5F7", flex: 1 }}>
@@ -206,6 +231,7 @@ class ProductDetails extends React.Component {
             onPress={(item, category, limit) =>
               this.AddMountComplements(item, category, limit)
             }
+            removeComplements={this.RemoveMountComplements}
             complements={complements}
           />
         </ScrollView>

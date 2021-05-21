@@ -5,6 +5,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 260,
   },
+
   headerTop: {
     paddingHorizontal: 10,
     paddingVertical: 20,

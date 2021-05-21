@@ -25,7 +25,12 @@ const BottomBarSection = (props) => {
         </TouchableOpacity>
       </View>
       <View style={{ flex: 3 }}>
-        <TouchableOpacity style={styles.button} onPress={props.onPress}>
+        <TouchableOpacity
+          style={
+            props.buttonAddAction ? styles.buttonDisabled : styles.buttonActive
+          }
+          onPress={props.onPress}
+        >
           <Text style={styles.buttonText}>
             Adicionar {convertMoney(props.total)}
           </Text>

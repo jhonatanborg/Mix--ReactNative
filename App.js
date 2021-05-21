@@ -6,10 +6,10 @@ import { ActivityIndicator } from "react-native";
 import { store, persistor } from "./store/store";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
-// import AsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const App = () => {
-  // AsyncStorage.clear();
+  AsyncStorage.clear();
 
   let [customFonts] = useFonts({
     MontserratRegular: require("./assets/fonts/montserrat/Montserrat-Regular.ttf"),

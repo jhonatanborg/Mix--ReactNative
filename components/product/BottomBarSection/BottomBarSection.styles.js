@@ -14,13 +14,21 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.white,
     paddingHorizontal: 8,
   },
-  button: {
+  buttonActive: {
     paddingHorizontal: 40,
     paddingVertical: 15,
     color: COLORS.white,
     backgroundColor: COLORS.primary,
     borderRadius: 5,
   },
+  buttonDisabled: {
+    paddingHorizontal: 40,
+    paddingVertical: 15,
+    color: COLORS.white,
+    backgroundColor: COLORS.lightGray3,
+    borderRadius: 5,
+  },
+
   buttonText: {
     fontFamily: "MontserratBold",
     fontSize: 16,

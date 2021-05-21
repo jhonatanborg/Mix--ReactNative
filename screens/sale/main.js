@@ -20,14 +20,14 @@ class Sale extends Component {
       sale: [],
     };
   }
-  removeItem = (item) => {
-    this.props.removeItem({ type: "REMOVE_ITEM_SALE", item });
+  removeItem = (index) => {
+    this.props.removeItem({ type: "REMOVE_ITEM_SALE", index });
   };
   render() {
     return (
       <View style={styles.container}>
         <ListProducts
-          onPress={(item) => this.removeItem(item)}
+          onPress={(index) => this.removeItem(index)}
           sale={this.props.sale}
         ></ListProducts>
       </View>
